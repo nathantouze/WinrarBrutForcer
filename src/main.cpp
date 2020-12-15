@@ -1,6 +1,8 @@
 #include "ArgParser.hpp"
 #include "ArgParserException.hpp"
+#include "WinrarBrutForcer.hpp"
 #include <iostream>
+#include <cstdlib>
 
 int main(int ac, char **av) 
 {
@@ -15,5 +17,9 @@ int main(int ac, char **av)
         std::cout << err.what() << std::endl;
         return 1;
     }
+    WinrarBrutForcer brutforcer(parser.getFilepath(), parser.getFilename());
+    brutforcer.setup();
+    brutforcer.start();
+    brutforcer.clear();
     return 0;
 }

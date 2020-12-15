@@ -7,6 +7,8 @@ class ArgParser {
     public:
         ArgParser(int ac, char **av);
         ~ArgParser();
+        const std::string &getFilepath() const;
+        const std::string &getFilename() const;
         bool getHelping() const;
         bool getDebugMod() const;
         void fill_labels();

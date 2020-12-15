@@ -28,6 +28,16 @@ ArgParser::~ArgParser()
 {
 }
 
+const std::string &ArgParser::getFilename() const
+{
+    return _filename;
+}
+
+const std::string &ArgParser::getFilepath() const
+{
+    return _filepath;
+}
+
 bool ArgParser::getHelping() const
 {
     return _helping;
@@ -107,8 +117,6 @@ void ArgParser::check_labels() const
     extension = _filename.substr(_filename.find_last_of('.'));
     if (extension != EXT_RAR && extension != EXT_ZIP)
         throw ArgParserException("The file submitted is not a RAR or ZIP file.");
-    file.open(_filepath + '/' + _filename, std::ios::in);
-    if (!file)
+    if (!std::filesystem::exists(_filepath + '/' + _filename))
         throw ArgParserException("Cannot open file. Maybe the file doesn't exist.");
-    file.close();
 }

@@ -18,6 +18,7 @@ add_executable(RarBrutForce)
 target_sources(RarBrutForce PUBLIC
     ${SRC}/main.cpp
     ${SRC}/ArgParser.cpp
+    ${SRC}/WinrarBrutForcer.cpp
 )
 
 target_include_directories(RarBrutForce PUBLIC
