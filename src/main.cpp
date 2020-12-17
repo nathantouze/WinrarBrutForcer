@@ -17,7 +17,7 @@ int main(int ac, char **av)
         std::cout << err.what() << std::endl;
         return 1;
     }
-    WinrarBrutForcer brutforcer(parser.getFilepath(), parser.getFilename());
+    WinrarBrutForcer brutforcer(parser.getFilepath(), parser.getFilename(), parser.getCharsEnabled());
     brutforcer.setup();
     brutforcer.start();
     brutforcer.clear();
