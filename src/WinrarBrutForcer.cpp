@@ -175,6 +175,7 @@ void WinrarBrutForcer::start()
         if (test(std::string(UNRAR_EXEC + std::string(" E -INUL -P\"") + mdpTest + "\" " + _filepath + "/" + _filename + " " + _tmpDirectory), mdpTest)) {
             std::cout << "---------------------- PASSWORD FOUND ----------------------" << std::endl << std::endl;
             std::cout << "Password: \"" << mdpTest << "\"" << std::endl;
+            std::cout << std::time(nullptr) - loop_time << " secondes pour cette loop." << std::endl;
             std::cout << std::time(nullptr) - start_time << " secondes au total !" << std::endl;
             std::cout << "Press enter to exit...";
             std::cin.ignore();
