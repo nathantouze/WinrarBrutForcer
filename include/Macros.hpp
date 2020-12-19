@@ -1,3 +1,6 @@
+#ifndef MACROS_HPP_
+#define MACROS_HPP_
+
 #define HELPER_ARG "-h"
 #define DEBUG_ARG "-d"
 #define UPPER_ARG "-u"
@@ -20,3 +23,5 @@
 #define NB_CHAR_LETTERS 26
 #define NB_CHAR_NUMBER 10
 #define NB_CHAR_SYMB 33
+
+#endif

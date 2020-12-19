@@ -11,7 +11,12 @@ else()
 endif()
 conan_basic_setup()
 
+
 set(SRC ./src)
+
+set(Boost_USE_STATIC_LIBS ON)
+
+find_package(Boost)
 
 add_executable(RarBrutForce)
 
@@ -19,6 +24,7 @@ target_sources(RarBrutForce PUBLIC
     ${SRC}/main.cpp
     ${SRC}/ArgParser.cpp
     ${SRC}/WinrarBrutForcer.cpp
+    ${SRC}/BrutForcerPool.cpp
 )
 
 target_include_directories(RarBrutForce PUBLIC
@@ -29,3 +35,5 @@ target_compile_options(RarBrutForce PUBLIC
     $<$<CXX_COMPILER_ID:MSVC>:/W3 /MD -D_WIN32_WINNT=0x0A00 /D_ITERATOR_DEBUG_LEVEL=0 /permissive- /TP /std:c++17>
     $<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>: -Wall -Werror>
 )
+
+target_link_libraries(RarBrutForce ${CONAN_LIBS} ${CMAKE_DL_LIBS})

@@ -17,17 +17,15 @@
 
 class WinrarBrutForcer {
     public:
-        WinrarBrutForcer(const std::string &filepath, const std::string &filename, const std::unordered_map<std::string, bool> &charsEnabled);
+        WinrarBrutForcer(const std::unordered_map<std::string, bool> &charsEnabled);
         ~WinrarBrutForcer();
-        void setup() const;
-        void clear() const;
-        void start();
+        const std::string find_every_combination(const std::string &filepath, unsigned int length, const std::string &tmpDirectory);
 
     protected:
     private:
         bool test(const std::string &command, const std::string &password) const;
-        bool completed_all_chars(const std::string &mdpTest) const;
-        void reset_all_chars(std::string &mdpTest);
+        bool completed_all_chars(const std::string &passTest) const;
+        void reset_all_chars(std::string &passTest);
         char first_char(int step) const;
         char first_char() const;
         char last_char() const;
@@ -36,10 +34,7 @@ class WinrarBrutForcer {
         char following_number(char current) const;
         char following_uppercase(char current) const;
         char following_lowercase(char current) const;
-        std::string _filepath;
-        std::string _filename;
         std::unordered_map<std::string, bool> _charsEnabled;
-        std::string _tmpDirectory;
 };
 
 #endif /* !WINRARBRUTFORCER_HPP_ */

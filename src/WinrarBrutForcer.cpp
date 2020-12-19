@@ -2,29 +2,14 @@
 #include <filesystem>
 #include <ctime>
 #include <iostream>
+#include <boost/thread/thread.hpp>
 
-WinrarBrutForcer::WinrarBrutForcer(const std::string &filepath, const std::string &filename, const std::unordered_map<std::string, bool> &charsEnabled) : \
-_filepath(filepath), _filename(filename), _charsEnabled(charsEnabled), \
-_tmpDirectory(std::filesystem::temp_directory_path().string() + "winrarbrutforce-" + std::to_string(std::time(nullptr)))
+WinrarBrutForcer::WinrarBrutForcer(const std::unordered_map<std::string, bool> &charsEnabled) : _charsEnabled(charsEnabled)
 {
 }
 
 WinrarBrutForcer::~WinrarBrutForcer()
 {
-}
-
-void WinrarBrutForcer::setup() const
-{
-    if (!std::filesystem::exists(UNRAR_BIN))
-        std::filesystem::copy(UNRAR_LOCATION, ".");
-    std::filesystem::create_directory(_tmpDirectory);
-}
-
-void WinrarBrutForcer::clear() const
-{
-    if (!std::filesystem::exists(UNRAR_BIN))
-        std::filesystem::remove(UNRAR_BIN);
-    std::filesystem::remove_all(_tmpDirectory);
 }
 
 char WinrarBrutForcer::first_char(int symbol_step) const
@@ -102,9 +87,8 @@ char WinrarBrutForcer::following_number(char current) const
         return current + 1;
     else if (current == '9' && last_char() == 'Z')
         return 'A';
-    else if (current == '9')
+    else if (current == '9' && last_char() == 'z')
         return 'a';
-    std::cout << "bah merde alors !" << std::endl;
     return 0;
 }
 
@@ -112,7 +96,7 @@ char WinrarBrutForcer::following_uppercase(char current) const
 {
     if (current == 'Z' && last_char() == '~')
         return current + 1;
-    else if (current == 'Z')
+    else if (current == 'Z' && last_char() == 'z')
         return 'a';
     return 0;
 }
@@ -142,20 +126,20 @@ char WinrarBrutForcer::next_char(char current) const
 }
 
 
-bool WinrarBrutForcer::completed_all_chars(const std::string &mdpTest) const
+bool WinrarBrutForcer::completed_all_chars(const std::string &passTest) const
 {
-    for (int i = 0; mdpTest[i]; i++) {
-        if (mdpTest[i] < last_char())
+    for (int i = 0; passTest[i]; i++) {
+        if (passTest[i] < last_char())
             return false;
     }
     return true;
 }
 
-void WinrarBrutForcer::reset_all_chars(std::string &mdpTest)
+void WinrarBrutForcer::reset_all_chars(std::string &passTest)
 {
-    for (int i = 0; mdpTest[i]; i++)
-        mdpTest[i] = first_char();
-    mdpTest += first_char();
+    for (int i = 0; passTest[i]; i++)
+        passTest[i] = first_char();
+    passTest += first_char();
 }
 
 bool WinrarBrutForcer::test(const std::string &command, const std::string &password) const
@@ -165,38 +149,28 @@ bool WinrarBrutForcer::test(const std::string &command, const std::string &passw
     return false;
 }
 
-void WinrarBrutForcer::start()
+const std::string WinrarBrutForcer::find_every_combination(const std::string &filepath, unsigned int length, const std::string &tmpDirectory)
 {
-    std::string mdpTest(1, first_char());
-    long long loop_time = std::time(nullptr);
-    long long start_time = std::time(nullptr);
+    std::string passTest(length, first_char());
 
     while (1) {
-        if (test(std::string(UNRAR_EXEC + std::string(" E -INUL -P\"") + mdpTest + "\" " + _filepath + "/" + _filename + " " + _tmpDirectory), mdpTest)) {
-            std::cout << "---------------------- PASSWORD FOUND ----------------------" << std::endl << std::endl;
-            std::cout << "Password: \"" << mdpTest << "\"" << std::endl;
-            std::cout << std::time(nullptr) - loop_time << " secondes pour cette loop." << std::endl;
-            std::cout << std::time(nullptr) - start_time << " secondes au total !" << std::endl;
-            std::cout << "Press enter to exit...";
-            std::cin.ignore();
-            break;
-        }
+        boost::this_thread::interruption_point();
+        if (test(std::string(UNRAR_EXEC + std::string(" E -INUL -P\"") + passTest + "\" " + filepath + " " + tmpDirectory), passTest))
+            return passTest;
 
     // algo brutforce
-        for (int i = 0; i < (int)mdpTest.length(); i++) {
-            if (mdpTest[i] == last_char() && i < (int)mdpTest.length() - 1) {
-                mdpTest[i] = first_char();
-            } else if (mdpTest[i] == last_char() && i == (int)mdpTest.length() - 1) {
+        for (int i = 0; i < (int)passTest.length(); i++) {
+            if (passTest[i] == last_char() && i < (int)passTest.length() - 1) {
+                passTest[i] = first_char();
+            } else if (passTest[i] == last_char() && i == (int)passTest.length() - 1) {
                 break;
             } else {
-                mdpTest[i] = next_char(mdpTest[i]);
+                passTest[i] = next_char(passTest[i]);
                 break;
             }
         }
-        if (completed_all_chars(mdpTest)) {
-            reset_all_chars(mdpTest);
-            std::cout << std::time(nullptr) - loop_time << " secondes pour cette loop." << std::endl;
-            loop_time = std::time(nullptr);
-        }
+        //std::cout << passTest << std::endl;
+        if (completed_all_chars(passTest))
+            return "";
     }
 }

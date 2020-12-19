@@ -28,7 +28,7 @@ ArgParser::ArgParser(int ac, char **av) : _ac(ac), _av(av), _filename(""), _file
                 _debugMod = true;
         }
     }
-    _charsEnabled.insert({"lowercase", true});
+    _charsEnabled.insert({"lowercase", false});
     _charsEnabled.insert({"uppercase", false});
     _charsEnabled.insert({"numbers", false});
     _charsEnabled.insert({"symbols", false});
@@ -127,11 +127,14 @@ bool ArgParser::is_flag_inside(const std::string &flag)
 void ArgParser::enable_characters()
 {
     if (is_flag_inside(ALL_ARG_ALT) || is_flag_inside(ALL_ARG)) {
+        _charsEnabled["lowercase"] = true;
         _charsEnabled["uppercase"] = true;
         _charsEnabled["numbers"] = true;
         _charsEnabled["symbols"] = true;
         return;
     }
+    if (is_flag_inside(LOWER_ARG) || is_flag_inside(LOWER_ARG_ALT))
+        _charsEnabled["lowercase"] = true;
     if (is_flag_inside(UPPER_ARG) || is_flag_inside(UPPER_ARG_ALT))
         _charsEnabled["uppercase"] = true;
     if (is_flag_inside(NUMBER_ARG) || is_flag_inside(NUMBER_ARG_ALT))
