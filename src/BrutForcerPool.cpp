@@ -9,7 +9,7 @@
 
 
 BrutForcerPool::BrutForcerPool(const std::string &filepath, const std::unordered_map<std::string, bool> &charsEnabled) : _filepath(filepath), _charsEnabled(charsEnabled), \
-_tmpDirectory(std::filesystem::temp_directory_path().string() + "winrarbrutforce-" + std::to_string(std::time(nullptr))), _maxLength(10)
+_tmpDirectory(std::filesystem::temp_directory_path().string() + "/winrarbrutforce-" + std::to_string(std::time(nullptr))), _maxLength(10)
 {
 }
 

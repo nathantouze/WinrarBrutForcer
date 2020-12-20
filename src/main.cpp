@@ -1,7 +1,7 @@
 #include "ArgParser.hpp"
 #include "ArgParserException.hpp"
 #include "WinrarBrutForcer.hpp"
-#include "BrutforcerPool.hpp"
+#include "BrutForcerPool.hpp"
 #include <iostream>
 #include <cstdlib>
 
