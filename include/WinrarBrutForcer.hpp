@@ -23,8 +23,7 @@ class WinrarBrutForcer {
 
     protected:
     private:
-        bool test(const std::string &command, const std::string &password) const;
-        bool completed_all_chars(const std::string &passTest) const;
+        bool test(const std::string &command) const;
         void reset_all_chars(std::string &passTest);
         char first_char(int step) const;
         char first_char() const;

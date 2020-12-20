@@ -168,4 +168,6 @@ void ArgParser::check_labels() const
         throw ArgParserException("The file submitted is not a RAR or ZIP file.");
     if (!std::filesystem::exists(_filepath + '/' + _filename))
         throw ArgParserException("Cannot open file. Maybe the file doesn't exist.");
+    if (!_charsEnabled.at("lowercase") && !_charsEnabled.at("uppercase") && !_charsEnabled.at("numbers") && !_charsEnabled.at("symbols"))
+        throw ArgParserException("No character type enabled.");
 }

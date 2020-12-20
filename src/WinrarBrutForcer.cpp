@@ -2,7 +2,6 @@
 #include <filesystem>
 #include <ctime>
 #include <iostream>
-#include <boost/thread/thread.hpp>
 
 WinrarBrutForcer::WinrarBrutForcer(const std::unordered_map<std::string, bool> &charsEnabled) : _charsEnabled(charsEnabled)
 {
@@ -112,7 +111,6 @@ char WinrarBrutForcer::next_char(char current) const
 {
     char ret;
 
-
     if (current != last_char() && current != '/' && current != '@' && \
     current != '`' && current != '9' && current != 'Z' && current != 'z')
         return current + 1;
@@ -125,24 +123,14 @@ char WinrarBrutForcer::next_char(char current) const
     return following_lowercase(current);
 }
 
-
-bool WinrarBrutForcer::completed_all_chars(const std::string &passTest) const
-{
-    for (int i = 0; passTest[i]; i++) {
-        if (passTest[i] < last_char())
-            return false;
-    }
-    return true;
-}
-
 void WinrarBrutForcer::reset_all_chars(std::string &passTest)
 {
-    for (int i = 0; passTest[i]; i++)
+    for (unsigned int i = 0; passTest[i]; ++i)
         passTest[i] = first_char();
     passTest += first_char();
 }
 
-bool WinrarBrutForcer::test(const std::string &command, const std::string &password) const
+bool WinrarBrutForcer::test(const std::string &command) const
 {
     if (std::system(command.c_str()) == 0)
         return true;
@@ -154,23 +142,21 @@ const std::string WinrarBrutForcer::find_every_combination(const std::string &fi
     std::string passTest(length, first_char());
 
     while (1) {
-        boost::this_thread::interruption_point();
-        if (test(std::string(UNRAR_EXEC + std::string(" E -INUL -P\"") + passTest + "\" " + filepath + " " + tmpDirectory), passTest))
+        if (test(UNRAR_EXEC + std::string(" E -INUL -P\"") + passTest + "\" " + filepath + " " + tmpDirectory))
             return passTest;
 
-    // algo brutforce
-        for (int i = 0; i < (int)passTest.length(); i++) {
-            if (passTest[i] == last_char() && i < (int)passTest.length() - 1) {
+        for (unsigned int i = 0; i < passTest.length(); ++i) {
+            if (passTest[i] == last_char() && i < passTest.length() - 1) {
                 passTest[i] = first_char();
-            } else if (passTest[i] == last_char() && i == (int)passTest.length() - 1) {
-                break;
+            } else if (passTest[i] == last_char()) {
+                return "";
             } else {
                 passTest[i] = next_char(passTest[i]);
                 break;
             }
         }
-        //std::cout << passTest << std::endl;
-        if (completed_all_chars(passTest))
-            return "";
     }
 }
+
+// 22 secondes avant (numbers / Windows)
+// 12 secondes après (numbers / Ubuntu)

@@ -9,7 +9,7 @@
 
 
 BrutForcerPool::BrutForcerPool(const std::string &filepath, const std::unordered_map<std::string, bool> &charsEnabled) : _filepath(filepath), _charsEnabled(charsEnabled), \
-_tmpDirectory(std::filesystem::temp_directory_path().string() + "winrarbrutforce-" + std::to_string(std::time(nullptr)))
+_tmpDirectory(std::filesystem::temp_directory_path().string() + "winrarbrutforce-" + std::to_string(std::time(nullptr))), _maxLength(10)
 {
 }
 
@@ -32,7 +32,7 @@ void BrutForcerPool::clear() const
 }
 
 
-void WinrarBrutForce(unsigned int characters, const std::string &filepath, const std::unordered_map<std::string, bool> &charsEnabled, const std::string &tmpDirectory)
+bool BrutForcerPool::brutforce(unsigned int characters, const std::string &filepath, const std::unordered_map<std::string, bool> &charsEnabled, const std::string &tmpDirectory)
 {
     WinrarBrutForcer brutforcer(charsEnabled);
     long long loop_time = std::time(nullptr);
@@ -44,31 +44,18 @@ void WinrarBrutForce(unsigned int characters, const std::string &filepath, const
         std::cout << std::time(nullptr) - loop_time << " seconds for this loop." << std::endl;
         std::cout << "Press enter to exit...";
         std::cin.ignore();
+        return true;
     } else {
-        std::cout << std::time(nullptr) - loop_time << " secondes for this loop with " << characters << " characters." << std::endl;
+        std::cout << std::time(nullptr) - loop_time << " secondes for this loop with " << characters << " characters.\n";
+        return false;
     }
 }
 
 
 void BrutForcerPool::start()
 {
-    boost::asio::io_service ioService;
-    boost::thread_group threadpool;
-    boost::asio::io_service::work work(ioService);
-    std::vector<boost::thread *> threads;
-    unsigned int cpu = std::thread::hardware_concurrency();
-    
-    for (unsigned int i = 0; i < cpu; i++)
-        threads.push_back(threadpool.create_thread(boost::bind(&boost::asio::io_service::run, &ioService)));
-    for (unsigned int i = 1; i <= cpu; i++)
-        ioService.post(boost::bind(WinrarBrutForce, i, _filepath, _charsEnabled, _tmpDirectory));
-    while (1) {
-        //std::this_thread::sleep_for(std::chrono::seconds(1));
-        /*for (unsigned int i = 0; i < cpu; i++)
-            if (threads.at(i)->interruption_requested())
-                std::cout << "True" << std::endl;
-            else
-                std::cout << "False" << std::endl;*/
+    for (unsigned int i = 1; i < _maxLength; i++) {
+        if (brutforce(i, _filepath, _charsEnabled, _tmpDirectory))
+            break;
     }
-    threadpool.join_all();
 }
