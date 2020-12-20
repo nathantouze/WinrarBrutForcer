@@ -8,7 +8,7 @@
 #include <iostream>
 
 
-BrutForcerPool::BrutForcerPool(const std::string &filepath, const std::unordered_map<std::string, bool> &charsEnabled) : _filepath(filepath), _charsEnabled(charsEnabled), \
+BrutForcerPool::BrutForcerPool(const std::string &filepath, const std::unordered_map<char, bool> &charsEnabled) : _filepath(filepath), _charsEnabled(charsEnabled), \
 _tmpDirectory(std::filesystem::temp_directory_path().string() + "/winrarbrutforce-" + std::to_string(std::time(nullptr))), _maxLength(10)
 {
 }
@@ -32,7 +32,7 @@ void BrutForcerPool::clear() const
 }
 
 
-bool BrutForcerPool::brutforce(unsigned int characters, const std::string &filepath, const std::unordered_map<std::string, bool> &charsEnabled, const std::string &tmpDirectory)
+bool BrutForcerPool::brutforce(unsigned int &characters, const std::string &filepath, const std::unordered_map<char, bool> &charsEnabled, const std::string &tmpDirectory)
 {
     WinrarBrutForcer brutforcer(charsEnabled);
     long long loop_time = std::time(nullptr);

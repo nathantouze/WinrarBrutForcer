@@ -16,16 +16,16 @@
 
 class BrutForcerPool {
     public:
-        BrutForcerPool(const std::string &filepath, const std::unordered_map<std::string, bool> &charsEnabled);
+        BrutForcerPool(const std::string &filepath, const std::unordered_map<char, bool> &charsEnabled);
         ~BrutForcerPool();
         void setup() const;
         void clear() const;
         void start();
     protected:
     private:
-        bool brutforce(unsigned int characters, const std::string &filepath, const std::unordered_map<std::string, bool> &charsEnabled, const std::string &tmpDirectory);
+        bool brutforce(unsigned int &characters, const std::string &filepath, const std::unordered_map<char, bool> &charsEnabled, const std::string &tmpDirectory);
         std::string _filepath;
-        std::unordered_map<std::string, bool> _charsEnabled;
+        std::unordered_map<char, bool> _charsEnabled;
         std::string _tmpDirectory;
         unsigned int _maxLength;
 

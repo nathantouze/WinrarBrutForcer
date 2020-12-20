@@ -28,10 +28,10 @@ ArgParser::ArgParser(int ac, char **av) : _ac(ac), _av(av), _filename(""), _file
                 _debugMod = true;
         }
     }
-    _charsEnabled.insert({"lowercase", false});
-    _charsEnabled.insert({"uppercase", false});
-    _charsEnabled.insert({"numbers", false});
-    _charsEnabled.insert({"symbols", false});
+    _charsEnabled.insert({'l', false});
+    _charsEnabled.insert({'u', false});
+    _charsEnabled.insert({'n', false});
+    _charsEnabled.insert({'s', false});
 }
 
 ArgParser::~ArgParser()
@@ -58,7 +58,7 @@ bool ArgParser::getDebugMod() const
     return _debugMod;
 }
 
-const std::unordered_map<std::string, bool> &ArgParser::getCharsEnabled() const
+const std::unordered_map<char, bool> &ArgParser::getCharsEnabled() const
 {
     return _charsEnabled;
 }
@@ -127,20 +127,20 @@ bool ArgParser::is_flag_inside(const std::string &flag)
 void ArgParser::enable_characters()
 {
     if (is_flag_inside(ALL_ARG_ALT) || is_flag_inside(ALL_ARG)) {
-        _charsEnabled["lowercase"] = true;
-        _charsEnabled["uppercase"] = true;
-        _charsEnabled["numbers"] = true;
-        _charsEnabled["symbols"] = true;
+        _charsEnabled['l'] = true;
+        _charsEnabled['u'] = true;
+        _charsEnabled['n'] = true;
+        _charsEnabled['s'] = true;
         return;
     }
     if (is_flag_inside(LOWER_ARG) || is_flag_inside(LOWER_ARG_ALT))
-        _charsEnabled["lowercase"] = true;
+        _charsEnabled['l'] = true;
     if (is_flag_inside(UPPER_ARG) || is_flag_inside(UPPER_ARG_ALT))
-        _charsEnabled["uppercase"] = true;
+        _charsEnabled['u'] = true;
     if (is_flag_inside(NUMBER_ARG) || is_flag_inside(NUMBER_ARG_ALT))
-        _charsEnabled["numbers"] = true;
+        _charsEnabled['n'] = true;
     if (is_flag_inside(SYMBOLS_ARG) || is_flag_inside(SYMBOLS_ARG_ALT))
-        _charsEnabled["symbols"] = true;
+        _charsEnabled['s'] = true;
 }
 
 void ArgParser::fill_labels()
@@ -156,7 +156,6 @@ void ArgParser::fill_labels()
 
 void ArgParser::check_labels() const
 {
-    std::fstream file;
     std::string extension;
 
     if (!std::filesystem::exists(_filepath))
@@ -168,6 +167,6 @@ void ArgParser::check_labels() const
         throw ArgParserException("The file submitted is not a RAR or ZIP file.");
     if (!std::filesystem::exists(_filepath + '/' + _filename))
         throw ArgParserException("Cannot open file. Maybe the file doesn't exist.");
-    if (!_charsEnabled.at("lowercase") && !_charsEnabled.at("uppercase") && !_charsEnabled.at("numbers") && !_charsEnabled.at("symbols"))
+    if (!_charsEnabled.at('l') && !_charsEnabled.at('u') && !_charsEnabled.at('n') && !_charsEnabled.at('s'))
         throw ArgParserException("No character type enabled.");
 }

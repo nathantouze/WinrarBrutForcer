@@ -12,7 +12,7 @@ class ArgParser {
         const std::string &getFilename() const;
         bool getHelping() const;
         bool getDebugMod() const;
-        const std::unordered_map<std::string, bool> &getCharsEnabled() const;
+        const std::unordered_map<char, bool> &getCharsEnabled() const;
         void fill_labels();
         void check_labels() const;
     protected:
@@ -29,7 +29,7 @@ class ArgParser {
         std::string _filepath;
         bool _helping;
         bool _debugMod;
-        std::unordered_map<std::string, bool> _charsEnabled;
+        std::unordered_map<char, bool> _charsEnabled;
 };
 
 #endif /* !ARGPARSER_HPP_ */

@@ -3,7 +3,7 @@
 #include <ctime>
 #include <iostream>
 
-WinrarBrutForcer::WinrarBrutForcer(const std::unordered_map<std::string, bool> &charsEnabled) : _charsEnabled(charsEnabled)
+WinrarBrutForcer::WinrarBrutForcer(const std::unordered_map<char, bool> &charsEnabled) : _charsEnabled(charsEnabled)
 {
 }
 
@@ -13,7 +13,7 @@ WinrarBrutForcer::~WinrarBrutForcer()
 
 char WinrarBrutForcer::first_char(int symbol_step) const
 {
-    if (_charsEnabled.at("symbols")) {
+    if (_charsEnabled.at('s')) {
         switch (symbol_step) {
         case 0:
             return ' ';
@@ -27,24 +27,24 @@ char WinrarBrutForcer::first_char(int symbol_step) const
             return 0;
         }
     }
-    if (_charsEnabled.at("numbers"))
+    if (_charsEnabled.at('n'))
         return '0';
-    if (_charsEnabled.at("uppercase"))
+    if (_charsEnabled.at('u'))
         return 'A';
-    if (_charsEnabled.at("lowercase"))
+    if (_charsEnabled.at('l'))
         return 'a';
     return 0;
 }
 
 char WinrarBrutForcer::first_char() const
 {
-    if (_charsEnabled.at("symbols"))
+    if (_charsEnabled.at('s'))
         return ' ';
-    if (_charsEnabled.at("numbers"))
+    if (_charsEnabled.at('n'))
         return '0';
-    if (_charsEnabled.at("uppercase"))
+    if (_charsEnabled.at('u'))
         return 'A';
-    if (_charsEnabled.at("lowercase"))
+    if (_charsEnabled.at('l'))
         return 'a';
     return 0;
 }
@@ -52,35 +52,35 @@ char WinrarBrutForcer::first_char() const
 
 char WinrarBrutForcer::last_char() const
 {
-    if (_charsEnabled.at("symbols"))
+    if (_charsEnabled.at('s'))
         return '~';
-    if (_charsEnabled.at("lowercase"))
+    if (_charsEnabled.at('l'))
         return 'z';
-    if (_charsEnabled.at("uppercase"))
+    if (_charsEnabled.at('u'))
         return 'Z';
-    if (_charsEnabled.at("numbers"))
+    if (_charsEnabled.at('n'))
         return '9';
     return 0;
 }
 
-char WinrarBrutForcer::following_symbol(char current) const
+char WinrarBrutForcer::following_symbol(const char &current) const
 {
-    if (current == '/' && _charsEnabled.at("numbers"))
+    if (current == '/' && _charsEnabled.at('n'))
         return '0';
     else if (current == '/')
         return first_char(1);
-    if (current == '@' && _charsEnabled.at("uppercase"))
+    if (current == '@' && _charsEnabled.at('u'))
         return 'A';
     else if (current == '@')
         return first_char(2);
-    if (current == '`' && _charsEnabled.at("lowercase"))
+    if (current == '`' && _charsEnabled.at('l'))
         return 'a';
     else if (current == '`')
         return first_char(3);
     return 0;
 }
 
-char WinrarBrutForcer::following_number(char current) const
+char WinrarBrutForcer::following_number(const char &current) const
 {
     if (current == '9' && last_char() == '~')
         return current + 1;
@@ -91,7 +91,7 @@ char WinrarBrutForcer::following_number(char current) const
     return 0;
 }
 
-char WinrarBrutForcer::following_uppercase(char current) const
+char WinrarBrutForcer::following_uppercase(const char &current) const
 {
     if (current == 'Z' && last_char() == '~')
         return current + 1;
@@ -100,14 +100,14 @@ char WinrarBrutForcer::following_uppercase(char current) const
     return 0;
 }
 
-char WinrarBrutForcer::following_lowercase(char current) const
+char WinrarBrutForcer::following_lowercase(const char &current) const
 {
     if (current == 'z' && last_char() == '~')
         return current + 1;
     return 0;
 }
 
-char WinrarBrutForcer::next_char(char current) const
+char WinrarBrutForcer::next_char(const char &current) const
 {
     char ret;
 
@@ -137,7 +137,7 @@ bool WinrarBrutForcer::test(const std::string &command) const
     return false;
 }
 
-const std::string WinrarBrutForcer::find_every_combination(const std::string &filepath, unsigned int length, const std::string &tmpDirectory)
+const std::string WinrarBrutForcer::find_every_combination(const std::string &filepath, unsigned int &length, const std::string &tmpDirectory)
 {
     std::string passTest(length, first_char());
 
@@ -145,8 +145,8 @@ const std::string WinrarBrutForcer::find_every_combination(const std::string &fi
         if (test(UNRAR_EXEC + std::string(" E -INUL -P\"") + passTest + "\" " + filepath + " " + tmpDirectory))
             return passTest;
 
-        for (unsigned int i = 0; i < passTest.length(); ++i) {
-            if (passTest[i] == last_char() && i < passTest.length() - 1) {
+        for (unsigned int i = 0; i < length; ++i) {
+            if (passTest[i] == last_char() && i < length - 1) {
                 passTest[i] = first_char();
             } else if (passTest[i] == last_char()) {
                 return "";
@@ -158,5 +158,5 @@ const std::string WinrarBrutForcer::find_every_combination(const std::string &fi
     }
 }
 
-// 22 secondes avant (numbers / Windows)
-// 12 secondes après (numbers / Ubuntu)
+// 22 secondes (numbers / Windows)
+// 12 secondes (numbers / Ubuntu)
