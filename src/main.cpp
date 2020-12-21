@@ -3,7 +3,7 @@
 #include "WinrarBrutForcer.hpp"
 #include "BrutForcerPool.hpp"
 #include <iostream>
-#include <cstdlib>
+#include <csignal>
 
 int main(int ac, char **av) 
 {
@@ -18,7 +18,7 @@ int main(int ac, char **av)
         std::cout << err.what() << std::endl;
         return 1;
     }
-    BrutForcerPool brutforcer(parser.getFilepath() + "/" +  parser.getFilename(), parser.getCharsEnabled());
+    BrutForcerPool brutforcer(parser.getFilepath() + "/" +  parser.getFilename(), parser.getCharsEnabled(), parser.getDebugMod());
     brutforcer.setup();
     brutforcer.start();
     brutforcer.clear();

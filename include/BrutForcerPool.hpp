@@ -16,7 +16,7 @@
 
 class BrutForcerPool {
     public:
-        BrutForcerPool(const std::string &filepath, const std::unordered_map<char, bool> &charsEnabled);
+        BrutForcerPool(const std::string &filepath, const std::unordered_map<char, bool> &charsEnabled, bool debug);
         ~BrutForcerPool();
         void setup() const;
         void clear() const;
@@ -24,10 +24,12 @@ class BrutForcerPool {
     protected:
     private:
         bool brutforce(unsigned int &characters, const std::string &filepath, const std::unordered_map<char, bool> &charsEnabled, const std::string &tmpDirectory);
+        void print_char_infos() const;
         std::string _filepath;
         std::unordered_map<char, bool> _charsEnabled;
         std::string _tmpDirectory;
         unsigned int _maxLength;
+        bool _debug;
 
 };
 

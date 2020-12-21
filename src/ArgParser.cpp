@@ -149,9 +149,9 @@ void ArgParser::fill_labels()
     if (_ac > 1) {
         fill_from_args();
     }
-    fill_from_stdin();
-    if (_debugMod)
+    if (_debugMod && _filepath != "" && _filename != "")
         printFileInfos();
+    fill_from_stdin();
 }
 
 void ArgParser::check_labels() const
@@ -167,6 +167,8 @@ void ArgParser::check_labels() const
         throw ArgParserException("The file submitted is not a RAR or ZIP file.");
     if (!std::filesystem::exists(_filepath + '/' + _filename))
         throw ArgParserException("Cannot open file. Maybe the file doesn't exist.");
+    else if (_debugMod)
+        std::cout << "File found." << std::endl;
     if (!_charsEnabled.at('l') && !_charsEnabled.at('u') && !_charsEnabled.at('n') && !_charsEnabled.at('s'))
         throw ArgParserException("No character type enabled.");
 }

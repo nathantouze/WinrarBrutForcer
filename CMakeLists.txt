@@ -14,10 +14,6 @@ conan_basic_setup()
 
 set(SRC ./src)
 
-set(Boost_USE_STATIC_LIBS ON)
-
-find_package(Boost)
-
 add_executable(RarBrutForce)
 
 target_sources(RarBrutForce PUBLIC
