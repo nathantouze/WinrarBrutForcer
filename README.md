@@ -18,7 +18,7 @@ You can choose your combination in terms of your needs.
 ### Warning
 The more characters you add, the slower the execution time. A good processor is advised. To speed up the execution time, I have some ideas but it will be added in the future.
 
-_This project only made for fun and I'm not aiming to break every single winrar password :). Anyway you'll need A LOT of time to just a 4-char password... (to be improved soon)_
+_This project only made for fun and I'm not aiming to break every single winrar password :). Anyway you'll need A LOT of time to just break a 4-char password... (to be improved soon)_
 
 ## Getting started
 
