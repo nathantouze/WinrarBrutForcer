@@ -7,11 +7,11 @@ For now, conan is useless because I don't use any library. Ideally, this project
 All is said in it's title: this program can test every possible solutions to break the Winrar password. By every possible solutions, I mean that it can test every printable string.
 A set of flags is available:
 ```
--a  Enable all printable characters
--l  Enable lowercase letters (enabled by default)
--u  Enable uppercase letters
--n  Enable numbers
--s  Enable symbols
+-a  Enables all printable characters
+-l  Enables lowercase letters (enabled by default)
+-u  Enables uppercase letters
+-n  Enables numbers
+-s  Enables symbols
 ```
 You can choose your combination in terms of your needs.
 
