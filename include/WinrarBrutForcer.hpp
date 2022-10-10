@@ -14,12 +14,15 @@
 
 #include <string>
 #include <unordered_map>
+#include <thread>
+#include <vector>
 
 class WinrarBrutForcer {
     public:
         WinrarBrutForcer(const std::unordered_map<char, bool> &charsEnabled);
         ~WinrarBrutForcer();
-        const std::string find_every_combination(const std::string &filepath, unsigned int &length, const std::string &tmpDirectory);
+        bool find_every_combination(const std::string &filepath, unsigned int &length, const std::string &tmpDirectory);
+        const std::string &getPassword() const;
 
     protected:
     private:
@@ -33,7 +36,12 @@ class WinrarBrutForcer {
         char following_number(const char &current) const;
         char following_uppercase(const char &current) const;
         char following_lowercase(const char &current) const;
+        void tester(std::string passTest, const std::string filepath, const std::string tmpDirectory);
+        std::thread testerer(std::string passTest, const std::string filepath, const std::string tmpDirectory);
+
         std::unordered_map<char, bool> _charsEnabled;
+        std::vector<std::thread> _threads;
+        std::string _password;
 };
 
 #endif /* !WINRARBRUTFORCER_HPP_ */

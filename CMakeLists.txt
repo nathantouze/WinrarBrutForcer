@@ -4,14 +4,6 @@ cmake_minimum_required(VERSION 2.8.12)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-if(EXISTS cmake-build-debug/conanbuildinfo.cmake) #Clion, with conanbuildinfo.cmake in root
-    include(build/conanbuildinfo.cmake)
-else()
-    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake) # Not CLion
-endif()
-conan_basic_setup()
-
-
 set(SRC ./src)
 
 add_executable(RarBrutForce)
@@ -32,4 +24,4 @@ target_compile_options(RarBrutForce PUBLIC
     $<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>: -Wall -Werror>
 )
 
-target_link_libraries(RarBrutForce ${CONAN_LIBS} ${CMAKE_DL_LIBS})
+target_link_libraries(RarBrutForce ${CMAKE_DL_LIBS})

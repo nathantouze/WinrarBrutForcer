@@ -47,10 +47,9 @@ bool BrutForcerPool::brutforce(unsigned int &characters, const std::string &file
     WinrarBrutForcer brutforcer(charsEnabled);
     long long loop_time = std::time(nullptr);
 
-    const std::string password = brutforcer.find_every_combination(filepath, characters, tmpDirectory);
-    if (password.size() != 0) {
+    if (brutforcer.find_every_combination(filepath, characters, tmpDirectory)) {
         std::cout << std::endl << "---------------------- PASSWORD FOUND ----------------------" << std::endl << std::endl;
-        std::cout << "Password: \"" << password << "\"" << std::endl;
+        std::cout << "Password: \"" << brutforcer.getPassword() << "\"" << std::endl;
         if (_debug)
             std::cout << std::time(nullptr) - loop_time << " seconds with " << characters << " characters.\n";
         return true;

@@ -5,6 +5,7 @@
 
 WinrarBrutForcer::WinrarBrutForcer(const std::unordered_map<char, bool> &charsEnabled) : _charsEnabled(charsEnabled)
 {
+    _password = "";
 }
 
 WinrarBrutForcer::~WinrarBrutForcer()
@@ -137,26 +138,59 @@ bool WinrarBrutForcer::test(const std::string &command) const
     return false;
 }
 
-const std::string WinrarBrutForcer::find_every_combination(const std::string &filepath, unsigned int &length, const std::string &tmpDirectory)
+void WinrarBrutForcer::tester(std::string passTest, const std::string filepath, const std::string tmpDirectory)
+{
+    if (test(UNRAR_EXEC + std::string(" E -INUL -P\"") + passTest + "\" " + filepath + " " + tmpDirectory)) {
+        _password = passTest;
+    }
+}
+
+std::thread WinrarBrutForcer::testerer(std::string passTest, const std::string filepath, const std::string tmpDirectory)
+{
+    return std::thread([=]{tester(passTest, filepath, tmpDirectory);});
+}
+
+bool WinrarBrutForcer::find_every_combination(const std::string &filepath, unsigned int &length, const std::string &tmpDirectory)
 {
     std::string passTest(length, first_char());
 
     while (1) {
-        if (test(UNRAR_EXEC + std::string(" E -INUL -P\"") + passTest + "\" " + filepath + " " + tmpDirectory))
-            return passTest;
-
-        for (unsigned int i = 0; i < length; ++i) {
-            if (passTest[i] == last_char() && i < length - 1) {
-                passTest[i] = first_char();
-            } else if (passTest[i] == last_char()) {
-                return "";
-            } else {
-                passTest[i] = next_char(passTest[i]);
-                break;
+        for (int i = 0; i < 8; i++) {
+            _threads.push_back(this->testerer(passTest, filepath, tmpDirectory));
+            for (unsigned int i = 0; i < length; ++i) {
+                if (passTest[i] == last_char() && i < length - 1) {
+                    passTest[i] = first_char();
+                } else if (passTest[i] == last_char()) {
+                    for (size_t i = 0; i < _threads.size(); i++) {
+                        _threads.at(i).join();
+                    }
+                    if (_password.size()) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    passTest[i] = next_char(passTest[i]);
+                    break;
+                }
             }
         }
+        for (size_t i = 0; i < _threads.size(); i++) {
+            _threads.at(i).join();
+        }
+        _threads.clear();
+        if (_password.size()) {
+            return true;
+        }
+        
+        // if (test(UNRAR_EXEC + std::string(" E -INUL -P\"") + passTest + "\" " + filepath + " " + tmpDirectory))
+        //     return passTest;
     }
 }
 
+
+const std::string &WinrarBrutForcer::getPassword() const {
+    return _password;
+}
 // 22 secondes (numbers / Windows)
 // 12 secondes (numbers / Ubuntu)
