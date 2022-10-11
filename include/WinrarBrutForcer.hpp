@@ -26,7 +26,6 @@ class WinrarBrutForcer {
 
     protected:
     private:
-        bool test(const std::string &command) const;
         void reset_all_chars(std::string &passTest);
         char first_char(int step) const;
         char first_char() const;
@@ -36,8 +35,8 @@ class WinrarBrutForcer {
         char following_number(const char &current) const;
         char following_uppercase(const char &current) const;
         char following_lowercase(const char &current) const;
-        void tester(std::string passTest, const std::string filepath, const std::string tmpDirectory);
-        std::thread testerer(std::string passTest, const std::string filepath, const std::string tmpDirectory);
+        void test(std::string passTest, const std::string filepath, const std::string tmpDirectory);
+        std::thread testThread(std::string passTest, const std::string filepath, const std::string tmpDirectory);
 
         std::unordered_map<char, bool> _charsEnabled;
         std::vector<std::thread> _threads;

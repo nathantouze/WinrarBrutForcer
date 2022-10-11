@@ -131,23 +131,17 @@ void WinrarBrutForcer::reset_all_chars(std::string &passTest)
     passTest += first_char();
 }
 
-bool WinrarBrutForcer::test(const std::string &command) const
+void WinrarBrutForcer::test(std::string passTest, const std::string filepath, const std::string tmpDirectory)
 {
-    if (std::system(command.c_str()) == 0)
-        return true;
-    return false;
-}
-
-void WinrarBrutForcer::tester(std::string passTest, const std::string filepath, const std::string tmpDirectory)
-{
-    if (test(UNRAR_EXEC + std::string(" E -INUL -P\"") + passTest + "\" " + filepath + " " + tmpDirectory)) {
+    std::string command = UNRAR_EXEC + std::string(" E -INUL -P\"") + passTest + " " + filepath + " " + tmpDirectory;
+    if (std::system(command.c_str()) == 0) {
         _password = passTest;
     }
 }
 
-std::thread WinrarBrutForcer::testerer(std::string passTest, const std::string filepath, const std::string tmpDirectory)
+std::thread WinrarBrutForcer::testThread(std::string passTest, const std::string filepath, const std::string tmpDirectory)
 {
-    return std::thread([=]{tester(passTest, filepath, tmpDirectory);});
+    return std::thread([=]{test(passTest, filepath, tmpDirectory);});
 }
 
 bool WinrarBrutForcer::find_every_combination(const std::string &filepath, unsigned int &length, const std::string &tmpDirectory)
@@ -155,8 +149,8 @@ bool WinrarBrutForcer::find_every_combination(const std::string &filepath, unsig
     std::string passTest(length, first_char());
 
     while (1) {
-        for (int i = 0; i < 8; i++) {
-            _threads.push_back(this->testerer(passTest, filepath, tmpDirectory));
+        for (int i = 0; i < 20; i++) {
+            _threads.push_back(this->testThread(passTest, filepath, tmpDirectory));
             for (unsigned int i = 0; i < length; ++i) {
                 if (passTest[i] == last_char() && i < length - 1) {
                     passTest[i] = first_char();
@@ -182,9 +176,6 @@ bool WinrarBrutForcer::find_every_combination(const std::string &filepath, unsig
         if (_password.size()) {
             return true;
         }
-        
-        // if (test(UNRAR_EXEC + std::string(" E -INUL -P\"") + passTest + "\" " + filepath + " " + tmpDirectory))
-        //     return passTest;
     }
 }
 
